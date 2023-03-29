@@ -2,10 +2,13 @@
   import { Container, Loader, Text } from "@svelteuidev/core";
   import { onMount } from "svelte";
 
-  import { fetchAllRepositories } from "../github";
-  import { listAllOpenedPullRequests, listMyReviews } from "../listMyReviews";
-  import organizeReviews from "../organizeReviews";
+  import {
+    listAllOpenedPullRequests,
+    listMyReviews,
+    organizeReviews,
+  } from "../business";
   import type { PullRequest, Repository, Settings } from "../schemas";
+  import { fetchAllRepositories } from "../technical";
   import RepositoryContainer from "./Repository.svelte";
 
   export let settings: Settings;

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Checkbox, TextInput, Title, Space, Stack } from "@svelteuidev/core";
-  import { getSettings, setSettings } from "../storage";
+  import { getSettings, setSettings } from "../technical";
 
   let settings = getSettings();
 

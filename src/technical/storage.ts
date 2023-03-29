@@ -1,5 +1,4 @@
-import { parseSettings, type Settings } from "./schemas";
-import { defaultSettings } from "./schemas";
+import { defaultSettings, parseSettings, type Settings } from "../schemas";
 
 const KEY = "settings";
 

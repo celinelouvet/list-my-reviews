@@ -1,8 +1,8 @@
 <script lang="ts">
   import { AppShell, Header, Modal } from "@svelteuidev/core";
   import { onMount } from "svelte";
-  import { getSettings } from "../storage";
 
+  import { getSettings } from "../technical";
   import Content from "./Content.svelte";
   import HeaderContent from "./Header.svelte";
   import SettingsContent from "./Settings.svelte";

@@ -1,6 +1,5 @@
 import { request } from "@octokit/request";
-import { parseUsers } from "../schemas";
-import type { User } from "../schemas";
+import { parseUsers, type User } from "../../schemas";
 
 const defaultMaxPerPage = 100;
 

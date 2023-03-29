@@ -1,6 +1,5 @@
 import { request } from "@octokit/request";
-import { parseReviews } from "../schemas";
-import type { PullRequest, Review } from "../schemas";
+import { parseReviews, type PullRequest, type Review } from "../../schemas";
 
 const defaultMaxPerPage = 100;
 const defaultPage = 1;

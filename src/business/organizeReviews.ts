@@ -1,4 +1,4 @@
-import type { PullRequest } from "./schemas";
+import type { PullRequest } from "../schemas";
 
 const RENOVATE = "renovate[bot]";
 
@@ -46,7 +46,7 @@ const groupByRepository = (
   return groupeds;
 };
 
-const organizeReviews = (
+export const organizeReviews = (
   pullRequests: PullRequest[],
   withRenovate: boolean
 ): Entry[] => {
@@ -57,5 +57,3 @@ const organizeReviews = (
 
   return sortByRepositoryName([...grouped.entries()]);
 };
-
-export default organizeReviews;

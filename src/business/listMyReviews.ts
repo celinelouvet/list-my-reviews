@@ -1,5 +1,5 @@
-import { fetchAllReviews, fetchOpenedPullRequests } from "./github";
-import type { PullRequest, Repository, Review } from "./schemas";
+import type { PullRequest, Repository, Review } from "../schemas";
+import { fetchAllReviews, fetchOpenedPullRequests } from "../technical";
 
 type Options = {
   token: string;
