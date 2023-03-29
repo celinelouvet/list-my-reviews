@@ -1,15 +1,45 @@
 <script lang="ts">
-  import { AppShell, Header } from "@svelteuidev/core";
+  import { AppShell, Header, Modal } from "@svelteuidev/core";
+  import { onMount } from "svelte";
+  import { getSettings } from "../storage";
 
   import Content from "./Content.svelte";
   import HeaderContent from "./Header.svelte";
-
-  export let token: string;
-  export let organization: string;
-  export let username: string;
-  export let team: string;
+  import SettingsContent from "./Settings.svelte";
 
   let opened = false;
+  let settingsShown = false;
+
+  let settings = getSettings();
+
+  const hasSettings = () => {
+    return (
+      settings.token &&
+      settings.username &&
+      settings.organization &&
+      settings.team
+    );
+  };
+
+  const checkSettings = () => {
+    if (!hasSettings()) {
+      opened = true;
+      settingsShown = false;
+    } else {
+      settingsShown = true;
+    }
+  };
+
+  const closeSettings = () => {
+    console.log("closeSettings");
+
+    opened = false;
+    settings = getSettings();
+  };
+
+  onMount(() => {
+    checkSettings();
+  });
 </script>
 
 <AppShell>
@@ -18,6 +48,11 @@
   </Header>
 
   <slot>
-    <Content {token} {organization} {username} {team} />
+    {#if settingsShown}
+      <Content {settings} />
+    {/if}
   </slot>
 </AppShell>
+<Modal {opened} on:close={closeSettings} title="Settings">
+  <SettingsContent />
+</Modal>

@@ -3,11 +3,6 @@
 
   import Home from "./components/Home.svelte";
 
-  export let token: string;
-  export let organization: string;
-  export let username: string;
-  export let team: string;
-
   let isDark = false;
 
   if (
@@ -19,5 +14,5 @@
 </script>
 
 <SvelteUIProvider themeObserver={isDark ? "dark" : "light"}>
-  <Home {token} {organization} {username} {team} />
+  <Home />
 </SvelteUIProvider>

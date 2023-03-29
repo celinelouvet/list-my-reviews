@@ -5,13 +5,16 @@
   import { fetchAllRepositories } from "../github";
   import { listAllOpenedPullRequests, listMyReviews } from "../listMyReviews";
   import organizeReviews from "../organizeReviews";
-  import type { PullRequest, Repository } from "../schemas";
+  import type { PullRequest, Repository, Settings } from "../schemas";
   import RepositoryContainer from "./Repository.svelte";
 
-  export let token: string;
-  export let organization: string;
-  export let username: string;
-  export let team: string;
+  export let settings: Settings;
+
+  $: organization = settings.organization;
+  $: team = settings.team;
+  $: username = settings.username;
+  $: token = settings.token;
+  $: withRenovate = settings.withRenovate;
 
   let loading = true;
 
