@@ -41,7 +41,7 @@
     );
     loading = false;
 
-    pullRequestsToReview = organizeReviews(openedPullRequests);
+    pullRequestsToReview = organizeReviews(openedPullRequests, withRenovate);
   };
 
   onMount(() => {

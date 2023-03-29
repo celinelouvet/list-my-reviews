@@ -34,7 +34,7 @@ const list = async () => {
       { token: TOKEN, repositories }
     );
 
-    return organizeReviews(myReviews);
+    return organizeReviews(myReviews, true);
   } catch (error) {
     console.error("Error: ", error);
 
