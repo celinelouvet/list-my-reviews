@@ -1,6 +1,5 @@
-import { partition, reverse } from "ramda";
 import { fetchAllReviews, fetchOpenedPullRequests } from "./github";
-import type { PullRequest, Repository } from "./schemas";
+import type { PullRequest, Repository, Review } from "./schemas";
 
 type Options = {
   token: string;
@@ -14,15 +13,34 @@ export type CurrentUser = {
 
 const mineOrMyTeams = (
   allPullRequests: PullRequest[],
-  { username, team }: CurrentUser
+  currentUser: CurrentUser
 ) => {
-  const [requestedReviews, nonRequestedReviews] = partition(
-    ({ requestedReviewers, requestedTeams }) =>
-      requestedReviewers.includes(username) || requestedTeams.includes(team),
-    allPullRequests
-  );
+  const requestedReviews = [];
+  const nonRequestedReviews = [];
+
+  for (const pullRequest of allPullRequests) {
+    if (isForMeOrMyTeam(pullRequest, currentUser)) {
+      requestedReviews.push(pullRequest);
+    } else {
+      nonRequestedReviews.push(pullRequest);
+    }
+  }
 
   return { mine: requestedReviews, others: nonRequestedReviews };
+};
+
+const isForMeOrMyTeam = (
+  { requestedReviewers, requestedTeams }: PullRequest,
+  { username, team }: CurrentUser
+) => requestedReviewers.includes(username) || requestedTeams.includes(team);
+
+const reverseReviews = (reviews: Review[]): Review[] => {
+  const reversed: Review[] = [];
+
+  while (reviews.length) {
+    reversed.push(reviews.pop());
+  }
+  return reversed;
 };
 
 const fetchReviewsAlreadyDone = async (
@@ -35,13 +53,14 @@ const fetchReviewsAlreadyDone = async (
       fetchAllReviews({ token, pullRequest })
     )
   );
-  console.log("username", username);
 
   const requestedReviews: PullRequest[] = [];
 
   for (const [index, pullRequest] of allPullRequests.entries()) {
     const reviews = allReviews[index];
-    const myReview = reverse(reviews).find(({ login }) => login === username);
+    const myReview = reverseReviews(reviews).find(
+      ({ login }) => login === username
+    );
 
     if (myReview) {
       requestedReviews.push({ ...pullRequest, myReview: myReview.state });
