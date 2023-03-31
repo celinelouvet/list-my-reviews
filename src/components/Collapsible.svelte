@@ -5,14 +5,10 @@
   let opened = false;
 
   const toggle = () => (opened = !opened);
-
-  const isDarkMode =
-    window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches;
 </script>
 
 <div
-  class="collapsible-container {isDarkMode && 'dark'}"
+  class="collapsible-container"
   use:clickoutside={{ enabled: opened, callback: () => (opened = false) }}
 >
   <div
@@ -38,11 +34,9 @@
 <style>
   .collapsible-container {
     border: 1px solid var(--svelteui-colors-gray200);
+    color: var(--svelteui-colors-dark600);
 
     border-radius: var(--svelteui-radii-xs);
-  }
-  .collapsible-container.dark {
-    border: 1px solid var(--svelteui-colors-dark400);
   }
 
   .collapsible-container .header {
@@ -55,9 +49,6 @@
   .collapsible-container .header.opened {
     border-bottom: 1px solid var(--svelteui-colors-gray200);
   }
-  .collapsible-container.dark .header.opened {
-    border-bottom: 1px solid var(--svelteui-colors-dark400);
-  }
 
   .collapsible-container .header *:nth-child(2n) {
     flex: 1;
@@ -69,5 +60,15 @@
 
   .collapsible-container .content.hidden {
     display: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .collapsible-container {
+      border: 1px solid var(--svelteui-colors-dark400);
+      color: var(--svelteui-colors-dark50);
+    }
+    .collapsible-container .header.opened {
+      border-bottom: 1px solid var(--svelteui-colors-dark400);
+    }
   }
 </style>

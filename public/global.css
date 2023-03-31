@@ -66,3 +66,18 @@ button:not(:disabled):active {
 button:focus {
   border-color: #666;
 }
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: var(--svelteui-colors-dark700);
+    color: var(--svelteui-colors-dark50);
+  }
+
+  input {
+    color: var(--svelteui-colors-dark50) !important;
+  }
+
+  button.svelteui-Modal-close {
+    color: var(--svelteui-colors-dark50) !important;
+  }
+}

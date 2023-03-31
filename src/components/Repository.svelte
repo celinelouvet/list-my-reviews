@@ -34,13 +34,13 @@
   <div slot="content">
     <Grid cols={16} align="center">
       <Grid.Col span={3}>
-        <Text size="sm" weight="bold">Requester</Text>
+        <Text size="xs" weight="bold">Requester</Text>
       </Grid.Col>
       <Grid.Col span={8}>
-        <Text size="sm" weight="bold">Title</Text>
+        <Text size="xs" weight="bold">Title</Text>
       </Grid.Col>
       <Grid.Col span={3}
-        ><Text size="sm" weight="bold">My review</Text></Grid.Col
+        ><Text size="xs" weight="bold">My review</Text></Grid.Col
       >
       <Grid.Col span={2} />
     </Grid>
@@ -48,13 +48,13 @@
     {#each pullRequests as pullRequest}
       <Grid cols={16} align="center">
         <Grid.Col span={3}>
-          <Text size="sm">{pullRequest.user}</Text>
+          <Text size="xs">{pullRequest.user}</Text>
         </Grid.Col>
         <Grid.Col span={8}>
-          <Text size="sm">{pullRequest.title} (#{pullRequest.number})</Text>
+          <Text size="xs">{pullRequest.title} (#{pullRequest.number})</Text>
         </Grid.Col>
         <Grid.Col span={3}>
-          <Text size="sm">{pullRequest.myReview}</Text>
+          <Text size="xs">{pullRequest.myReview}</Text>
         </Grid.Col>
         <Grid.Col span={2}>
           <Button
