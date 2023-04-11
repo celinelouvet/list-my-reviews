@@ -4,13 +4,13 @@
 
   import {
     listAllOpenedPullRequests,
+    listMyPullRequests,
     listMyReviews,
     organizeReviews,
   } from "../business";
   import type { PullRequest, Repository, Settings } from "../schemas";
   import { fetchAllRepositories } from "../technical";
   import RepositoryContainer from "./Repository.svelte";
-  import { listMyPullRequests } from "../business/listMyReviews";
   import MyPullRequestsContainer from "./MyPullRequests.svelte";
 
   export let settings: Settings;
@@ -40,10 +40,11 @@
       repositories,
     });
 
-    myPullRequests = await listMyPullRequests(allOpenedPullRequests, {
-      username,
-      team,
-    });
+    myPullRequests = await listMyPullRequests(
+      allOpenedPullRequests,
+      { username, team },
+      { token, repositories }
+    );
 
     openedPullRequests = await listMyReviews(
       allOpenedPullRequests,

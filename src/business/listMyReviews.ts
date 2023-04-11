@@ -84,15 +84,6 @@ export const listAllOpenedPullRequests = async ({
   return pullRequestsByRepository.flat();
 };
 
-export const listMyPullRequests = async (
-  allPullRequests: PullRequest[],
-  { username }: CurrentUser
-): Promise<PullRequest[]> => {
-  const mine = allPullRequests.filter(({ user }) => user === username);
-
-  return mine;
-};
-
 export const listMyReviews = async (
   allPullRequests: PullRequest[],
   currentUser: CurrentUser,

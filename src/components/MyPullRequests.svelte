@@ -33,8 +33,11 @@
 
   <div slot="content">
     <Grid cols={16} align="center">
-      <Grid.Col span={14}>
+      <Grid.Col span={12}>
         <Text size="xs">{pullRequest.title}</Text>
+      </Grid.Col>
+      <Grid.Col span={2}>
+        <Text size="xs">{pullRequest.myReview}</Text>
       </Grid.Col>
 
       <Grid.Col span={2}>
