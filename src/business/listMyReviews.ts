@@ -89,8 +89,12 @@ export const listMyReviews = async (
   currentUser: CurrentUser,
   { token }: Options
 ): Promise<PullRequest[]> => {
+  const notCreatedByMePullRequests = allPullRequests.filter(
+    ({ user }) => user !== currentUser.username
+  );
+
   const { mine: requestedReviews, others: othersPullRequests } = mineOrMyTeams(
-    allPullRequests,
+    notCreatedByMePullRequests,
     currentUser
   );
 
@@ -106,7 +110,7 @@ export const listMyReviews = async (
   ];
 
   console.log(
-    `Found ${pullRequestsToReview.length} / ${allPullRequests.length} pull requests for me`
+    `Found ${pullRequestsToReview.length} / ${notCreatedByMePullRequests.length} pull requests for me`
   );
 
   return pullRequestsToReview;
