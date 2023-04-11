@@ -16,7 +16,7 @@ export type CurrentUser = {
   team: string;
 };
 
-const reverseReviews = (reviews: Review[]): Review[] => {
+export const _reverseReviews = (reviews: Review[]): Review[] => {
   const reversed: Review[] = [];
 
   while (reviews.length) {
@@ -25,8 +25,8 @@ const reverseReviews = (reviews: Review[]): Review[] => {
   return reversed;
 };
 
-const latestReviewsStates = (reviews: Review[]): ReviewState[] => {
-  const reversed = reverseReviews(reviews);
+export const _latestReviewsStates = (reviews: Review[]): ReviewState[] => {
+  const reversed = _reverseReviews(reviews);
 
   const latestReviews = new Map<string, ReviewState>();
   for (const review of reversed) {
@@ -37,11 +37,16 @@ const latestReviewsStates = (reviews: Review[]): ReviewState[] => {
     }
   }
 
-  return [...latestReviews.values()];
+  return [...new Set<ReviewState>(latestReviews.values())];
 };
 
-const getReviewState = (reviews: Review[]): ReviewState => {
-  const states = latestReviewsStates(reviews);
+export const _getReviewState = (
+  pullRequest: PullRequest,
+  reviews: Review[]
+): ReviewState => {
+  const { requestedReviewers, requestedTeams } = pullRequest;
+
+  const states = _latestReviewsStates(reviews);
 
   if (states.includes(ReviewState.changesRequested)) {
     return ReviewState.changesRequested;
@@ -52,7 +57,9 @@ const getReviewState = (reviews: Review[]): ReviewState => {
   if (
     !states.includes(ReviewState.pending) &&
     !states.includes(ReviewState.dismissed) &&
-    states.includes(ReviewState.approved)
+    states.includes(ReviewState.approved) &&
+    requestedReviewers.length === 0 &&
+    requestedTeams.length === 0
   ) {
     return ReviewState.approved;
   }
@@ -78,7 +85,7 @@ const fetchReviewStates = async (
 
     requestedReviews.push({
       ...pullRequest,
-      myReview: getReviewState(otherReviews),
+      myReview: _getReviewState(pullRequest, otherReviews),
     });
   }
 
