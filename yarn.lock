@@ -380,15 +380,15 @@
   resolved "https://registry.yarnpkg.com/@stitches/core/-/core-1.2.8.tgz#dce3b8fdc764fbc6dbea30c83b73bfb52cf96173"
   integrity sha512-Gfkvwk9o9kE9r9XNBmJRfV8zONvXThnm1tcuojL04Uy5uRyqg93DC83lDebl0rocZCfKSjUv+fWYtMQmEDJldg==
 
-"@svelteuidev/composables@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@svelteuidev/composables/-/composables-0.10.0.tgz#894a230ee6e3d1361a8811ddb77d603904d7d841"
-  integrity sha512-6fmwFX9BSsF5jbEdrGqBloC0Knx5lyj7HjjZyD/hT6iKKeP/xDbNMfOLwIBqcBu4HN2EIWnLzvKBVeqoVKonWA==
+"@svelteuidev/composables@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@svelteuidev/composables/-/composables-0.11.1.tgz#73b195bc5fe809e1ba9fb30b96536a19f7d6f0db"
+  integrity sha512-TTRGTDlrJD22KT/X8L2he5hu3rDorzzB591sgzDjtCi35vKF6Z/ijuc/ngNCFHA+2WxcDGBGPs7YewEgv2yEKg==
 
-"@svelteuidev/core@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@svelteuidev/core/-/core-0.10.0.tgz#8635160c90aade9eb44f5991b9c13ddea69e3c6f"
-  integrity sha512-58cRAEZQmM48zZuYiMyMHwt6rfj0YtrzS71mfo+E2icjiYeofAANDYklCchMm1PClmcRT70OCZQc6SenoKuR9g==
+"@svelteuidev/core@^0.11.1":
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/@svelteuidev/core/-/core-0.11.1.tgz#0d60b6c285c315929a1b98fccff591e9d7c8045b"
+  integrity sha512-Dy16B6OaoSgMPyWL+WvrJwFB529N6Gmr4S4qdUWmE3LrJwhm9rNtwoEQn167dhOlmTQhfgJDot+DuIRRwtGXrw==
   dependencies:
     "@floating-ui/dom" "0.5.2"
     "@stitches/core" "1.2.8"
