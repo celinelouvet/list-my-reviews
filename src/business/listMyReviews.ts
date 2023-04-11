@@ -30,9 +30,11 @@ const mineOrMyTeams = (
 };
 
 const isForMeOrMyTeam = (
-  { requestedReviewers, requestedTeams }: PullRequest,
+  { user, requestedReviewers, requestedTeams }: PullRequest,
   { username, team }: CurrentUser
-) => requestedReviewers.includes(username) || requestedTeams.includes(team);
+) =>
+  user !== username &&
+  (requestedReviewers.includes(username) || requestedTeams.includes(team));
 
 const reverseReviews = (reviews: Review[]): Review[] => {
   const reversed: Review[] = [];
@@ -80,6 +82,15 @@ export const listAllOpenedPullRequests = async ({
     )
   );
   return pullRequestsByRepository.flat();
+};
+
+export const listMyPullRequests = async (
+  allPullRequests: PullRequest[],
+  { username }: CurrentUser
+): Promise<PullRequest[]> => {
+  const mine = allPullRequests.filter(({ user }) => user === username);
+
+  return mine;
 };
 
 export const listMyReviews = async (

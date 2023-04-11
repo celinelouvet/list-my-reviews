@@ -3,6 +3,7 @@ import { State as ReviewState } from "./reviews";
 import { UserSchema } from "./users";
 
 export enum State {
+  draft = "draft",
   open = "open",
   closed = "closed",
 }
@@ -38,6 +39,8 @@ const PullRequestSchema = ReceivedSchema.transform(
     requested_reviewers,
     requested_teams,
     head,
+    state,
+    draft,
     ...rest
   }) => ({
     ...rest,
@@ -50,6 +53,7 @@ const PullRequestSchema = ReceivedSchema.transform(
       name: head.repo.name,
     },
     myReview: ReviewState.pending,
+    state: draft ? State.draft : state,
   })
 );
 

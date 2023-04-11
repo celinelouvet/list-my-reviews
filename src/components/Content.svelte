@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Container, Loader, Text } from "@svelteuidev/core";
+  import { Container, Loader, Space, Text } from "@svelteuidev/core";
   import { onMount } from "svelte";
 
   import {
@@ -10,6 +10,8 @@
   import type { PullRequest, Repository, Settings } from "../schemas";
   import { fetchAllRepositories } from "../technical";
   import RepositoryContainer from "./Repository.svelte";
+  import { listMyPullRequests } from "../business/listMyReviews";
+  import MyPullRequestsContainer from "./MyPullRequests.svelte";
 
   export let settings: Settings;
 
@@ -24,6 +26,7 @@
   let repositories: Repository[] = [];
   let openedPullRequests: PullRequest[] = [];
   let pullRequestsToReview: [string, PullRequest[]][] = [];
+  let myPullRequests: PullRequest[] = [];
 
   const refresh = async () => {
     loading = true;
@@ -35,6 +38,11 @@
     const allOpenedPullRequests = await listAllOpenedPullRequests({
       token,
       repositories,
+    });
+
+    myPullRequests = await listMyPullRequests(allOpenedPullRequests, {
+      username,
+      team,
     });
 
     openedPullRequests = await listMyReviews(
@@ -77,8 +85,22 @@
       <Text size="xs" align="right">{repositories.length}</Text>
       <Text size="xs">Fetched opened pull requests:</Text>
       <Text size="xs" align="right">{openedPullRequests.length}</Text>
+      <Text size="xs">My pull requests:</Text>
+      <Text size="xs" align="right">{myPullRequests.length}</Text>
     </Container>
+
     <Container>
+      <h2>My opened pull requests</h2>
+
+      {#each myPullRequests as pullRequest}
+        <MyPullRequestsContainer {pullRequest} />
+      {/each}
+    </Container>
+
+    <Space h="lg" />
+    <Container>
+      <h2>Pull requests to review</h2>
+
       {#each pullRequestsToReview as [repository, pullRequests]}
         <RepositoryContainer {repository} {pullRequests} />
       {/each}

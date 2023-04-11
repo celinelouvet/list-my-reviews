@@ -1,7 +1,6 @@
 import { request } from "@octokit/request";
 import {
   parsePullRequests,
-  PullRequestState,
   type PullRequest,
   type Repository,
 } from "../../schemas";
@@ -17,6 +16,12 @@ type Options = {
   repository: Repository;
 };
 
+export enum State {
+  open = "open",
+  closed = "closed",
+  all = "all",
+}
+
 const fetchGithub = async ({
   token,
   repository: { owner, name },
@@ -29,7 +34,7 @@ const fetchGithub = async ({
       owner,
       repo: name,
       per_page: max,
-      state: PullRequestState.open,
+      state: State.open,
       base: "master",
       page,
     };
