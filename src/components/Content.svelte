@@ -1,35 +1,29 @@
 <script lang="ts">
-  import { Container, Loader, Space, Text } from "@svelteuidev/core";
-  import { onMount } from "svelte";
+  import { Container, Space, Text } from "@svelteuidev/core";
 
-  import {
-    listAllOpenedPullRequests,
-    listMyPullRequests,
-    listMyReviews,
-    organizeReviews,
-  } from "../business";
+  import { listAllOpenedPullRequests, listMyPullRequests } from "../business";
   import type { PullRequest, Repository, Settings } from "../schemas";
   import { fetchAllRepositories } from "../technical";
-  import RepositoryContainer from "./Repository.svelte";
   import MyPullRequestsContainer from "./MyPullRequests.svelte";
+  import ReviewsContainer from "./Reviews.svelte";
 
-  export let settings: Settings;
+  let organization: string;
+  let team: string;
+  let username: string;
+  let token: string;
 
-  $: organization = settings.organization;
-  $: team = settings.team;
-  $: username = settings.username;
-  $: token = settings.token;
-  $: withRenovate = settings.withRenovate;
-
-  let loading = true;
+  let reviewsContainer;
+  let myPullRequestsContainer;
 
   let repositories: Repository[] = [];
-  let openedPullRequests: PullRequest[] = [];
-  let pullRequestsToReview: [string, PullRequest[]][] = [];
   let myPullRequests: PullRequest[] = [];
 
-  const refresh = async () => {
-    loading = true;
+  const refresh = async (settings: Settings) => {
+    organization = settings.organization;
+    team = settings.team;
+    username = settings.username;
+    token = settings.token;
+
     repositories = await fetchAllRepositories({
       token,
       organization,
@@ -46,68 +40,34 @@
       { token, repositories }
     );
 
-    openedPullRequests = await listMyReviews(
-      allOpenedPullRequests,
-      { username, team },
-      { token, repositories }
+    await reviewsContainer.load(settings, repositories, allOpenedPullRequests);
+    await myPullRequestsContainer.load(
+      settings,
+      repositories,
+      allOpenedPullRequests
     );
-    loading = false;
-
-    pullRequestsToReview = organizeReviews(openedPullRequests, withRenovate);
   };
 
-  onMount(() => {
-    refresh();
-  });
+  export const container = {
+    refresh,
+  };
 </script>
 
 <main>
-  {#if loading}
-    <Container
-      override={{
-        height: "80vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Loader variant="bars" />
-    </Container>
-  {:else}
-    <Container
-      override={{
-        display: "grid",
-        gridTemplateColumns: "175px 35px",
-        justifyContent: "end",
-        marginBottom: "1rem",
-      }}
-    >
-      <Text size="xs">Fetched repositories:</Text>
-      <Text size="xs" align="right">{repositories.length}</Text>
-      <Text size="xs">Fetched opened pull requests:</Text>
-      <Text size="xs" align="right">{openedPullRequests.length}</Text>
-      <Text size="xs">My pull requests:</Text>
-      <Text size="xs" align="right">{myPullRequests.length}</Text>
-    </Container>
+  <Container
+    override={{
+      display: "grid",
+      gridTemplateColumns: "175px 35px",
+      justifyContent: "end",
+      marginBottom: "1rem",
+    }}
+  >
+    <Text size="xs">Fetched repositories:</Text>
+    <Text size="xs" align="right">{repositories.length}</Text>
+  </Container>
 
-    <Container>
-      <h2>My opened pull requests</h2>
-
-      {#each myPullRequests as pullRequest}
-        <MyPullRequestsContainer {pullRequest} />
-      {/each}
-    </Container>
-
-    <Space h="lg" />
-    <Container>
-      <h2>Pull requests to review</h2>
-
-      {#each pullRequestsToReview as [repository, pullRequests]}
-        <RepositoryContainer {repository} {pullRequests} />
-      {/each}
-    </Container>
-  {/if}
+  <MyPullRequestsContainer bind:container={myPullRequestsContainer} />
+  <Space h="xl" />
+  <Space h="xl" />
+  <ReviewsContainer bind:container={reviewsContainer} />
 </main>
-
-<style>
-</style>

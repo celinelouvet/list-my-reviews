@@ -7,8 +7,9 @@
   import HeaderContent from "./Header.svelte";
   import SettingsContent from "./Settings.svelte";
 
+  let contentContainer;
+
   let opened = false;
-  let settingsShown = false;
 
   let settings = getSettings();
 
@@ -24,17 +25,16 @@
   const checkSettings = () => {
     if (!hasSettings()) {
       opened = true;
-      settingsShown = false;
     } else {
-      settingsShown = true;
+      settings = getSettings();
+      contentContainer.refresh(settings);
     }
   };
 
   const closeSettings = () => {
-    console.log("closeSettings");
-
     opened = false;
     settings = getSettings();
+    contentContainer.refresh(settings);
   };
 
   onMount(() => {
@@ -48,9 +48,7 @@
   </Header>
 
   <slot>
-    {#if settingsShown}
-      <Content {settings} />
-    {/if}
+    <Content bind:container={contentContainer} />
   </slot>
 </AppShell>
 <Modal {opened} on:close={closeSettings} title="Settings">
