@@ -14,7 +14,8 @@
     repositories: Repository[],
     allOpenedPullRequests: PullRequest[]
   ) => {
-    const { username, team, token, withRenovate } = settings;
+    const { username, team, token, withRenovate, withApprovedPullRequests } =
+      settings;
 
     loading = true;
 
@@ -23,7 +24,11 @@
       { username, team },
       { token, repositories }
     );
-    pullRequestsToReview = organizeReviews(openedPullRequests, withRenovate);
+    pullRequestsToReview = organizeReviews(
+      openedPullRequests,
+      withRenovate,
+      withApprovedPullRequests
+    );
 
     title = `Pull requests to review (${openedPullRequests.length})`;
     loading = false;

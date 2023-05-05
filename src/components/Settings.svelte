@@ -55,7 +55,13 @@
   <Checkbox
     bind:checked={settings.withRenovate}
     name="withRenovate"
-    label="View renovate pull request"
+    label="View renovate pull requests"
+    on:change={saveSettings}
+  />
+  <Checkbox
+    bind:checked={settings.withApprovedPullRequests}
+    name="withApprovedPullRequests"
+    label="View already approved pull requests"
     on:change={saveSettings}
   />
 </Stack>

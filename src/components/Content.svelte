@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Container, Space, Text } from "@svelteuidev/core";
+  import { Badge, Container, Grid, Space, Text } from "@svelteuidev/core";
 
   import { listAllOpenedPullRequests, listMyPullRequests } from "../business";
   import type { PullRequest, Repository, Settings } from "../schemas";
@@ -12,6 +12,9 @@
   let username: string;
   let token: string;
 
+  let withApprovedPullRequests: boolean;
+  let withRenovate: boolean;
+
   let reviewsContainer;
   let myPullRequestsContainer;
 
@@ -23,6 +26,8 @@
     team = settings.team;
     username = settings.username;
     token = settings.token;
+    withApprovedPullRequests = settings.withApprovedPullRequests;
+    withRenovate = settings.withRenovate;
 
     repositories = await fetchAllRepositories({
       token,
@@ -51,19 +56,40 @@
   export const container = {
     refresh,
   };
+
+  const color = (value: boolean) => (value ? "green" : "blue");
 </script>
 
 <main>
   <Container
     override={{
-      display: "grid",
-      gridTemplateColumns: "175px 35px",
-      justifyContent: "end",
-      marginBottom: "1rem",
+      marginBottom: "2em",
     }}
   >
-    <Text size="xs">Fetched repositories:</Text>
-    <Text size="xs" align="right">{repositories.length}</Text>
+    <Grid cols={10} align="center">
+      <Grid.Col span={4}>
+        <Text size="xs">With Renovate pull requests:</Text>
+      </Grid.Col>
+      <Grid.Col span={1} align="center">
+        <Badge color={color(withRenovate)}>{withRenovate ? "Yes" : "No"}</Badge>
+      </Grid.Col>
+
+      <Grid.Col span={4}>
+        <Text size="xs" align="right">Fetched repositories:</Text>
+      </Grid.Col>
+      <Grid.Col span={1} align="center">
+        <Text size="xs">{repositories.length}</Text>
+      </Grid.Col>
+
+      <Grid.Col span={4}>
+        <Text size="xs">With approved pull requests:</Text>
+      </Grid.Col>
+      <Grid.Col span={1} align="center">
+        <Badge color={color(withApprovedPullRequests)}
+          >{withApprovedPullRequests ? "Yes" : "No"}</Badge
+        >
+      </Grid.Col>
+    </Grid>
   </Container>
 
   <MyPullRequestsContainer bind:container={myPullRequestsContainer} />

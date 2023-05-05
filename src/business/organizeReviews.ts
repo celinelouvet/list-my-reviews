@@ -1,6 +1,6 @@
-import type { PullRequest } from "../schemas";
+import { ReviewState, type PullRequest } from "../schemas";
 
-const RENOVATE = "renovate[bot]";
+export const RENOVATE = "renovate[bot]";
 
 type Entry = [string, PullRequest[]];
 
@@ -19,13 +19,15 @@ const sortByRepositoryName = (groupeds: Entry[]): Entry[] => {
   ]);
 };
 
-const filterWithRenovate = (
-  pullRequests: PullRequest[],
+export const withOrWithoutRenovatePullRequest = (
+  user: string,
   withRenovate: boolean
-): PullRequest[] =>
-  withRenovate
-    ? pullRequests
-    : pullRequests.filter(({ user }) => user !== RENOVATE);
+): boolean => withRenovate || user !== RENOVATE;
+
+export const withOrWithoutApprovedPullRequest = (
+  myReview: ReviewState,
+  withApprovedPullRequests: boolean
+): boolean => withApprovedPullRequests || myReview !== ReviewState.approved;
 
 const buildRepositoryName = ({ repository }: PullRequest): string =>
   `${repository.owner} / ${repository.name}`;
@@ -48,9 +50,15 @@ const groupByRepository = (
 
 export const organizeReviews = (
   pullRequests: PullRequest[],
-  withRenovate: boolean
+  withRenovate: boolean,
+  withApprovedPullRequests: boolean
 ): Entry[] => {
-  const filteredPullRequests = filterWithRenovate(pullRequests, withRenovate);
+  const filteredPullRequests = pullRequests
+    .filter(({ user }) => withOrWithoutRenovatePullRequest(user, withRenovate))
+    .filter(({ myReview }) =>
+      withOrWithoutApprovedPullRequest(myReview, withApprovedPullRequests)
+    );
+
   const grouped = groupByRepository(filteredPullRequests);
 
   console.log("grouped", grouped);

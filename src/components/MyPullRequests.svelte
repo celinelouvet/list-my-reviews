@@ -24,7 +24,7 @@
       { username, team },
       { token, repositories }
     );
-    pullRequestsToReview = organizeReviews(myPullRequests, true);
+    pullRequestsToReview = organizeReviews(myPullRequests, true, true);
 
     title = `My opened pull requests (${myPullRequests.length})`;
     loading = false;

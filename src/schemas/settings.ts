@@ -6,6 +6,7 @@ export const SettingsSchema = z.strictObject({
   organization: z.string().default(""),
   team: z.string().default(""),
   withRenovate: z.boolean().default(true),
+  withApprovedPullRequests: z.boolean().default(true),
 });
 
 export type Settings = z.infer<typeof SettingsSchema>;
