@@ -20,16 +20,19 @@ const review1: Pick<Review, "login"> = { login: login1 };
 const review2: Pick<Review, "login"> = { login: login2 };
 
 const emptyPullRequest: PullRequest = {
-  htmlUrl: "htmlUrl",
   user: "user",
+  htmlUrl: "htmlUrl",
+  state: PullRequestState.open,
+  requestedReviewers: [],
+  requestedTeams: [],
   repository: {
     name: "name",
     owner: "owner",
   },
-  state: PullRequestState.open,
   myReview: ReviewState.pending,
-  requestedReviewers: [],
-  requestedTeams: [],
+  number: 25,
+  url: "url",
+  title: "title",
 };
 
 describe("_reverseReviews", () => {

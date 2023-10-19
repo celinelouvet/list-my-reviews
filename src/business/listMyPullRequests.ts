@@ -20,7 +20,11 @@ export const _reverseReviews = (reviews: Review[]): Review[] => {
   const reversed: Review[] = [];
 
   while (reviews.length) {
-    reversed.push(reviews.pop());
+    const review = reviews.pop();
+
+    if (review) {
+      reversed.push(review);
+    }
   }
   return reversed;
 };

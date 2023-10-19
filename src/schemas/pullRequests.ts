@@ -46,6 +46,7 @@ const PullRequestSchema = ReceivedSchema.transform(
     ...rest,
     user: user.login,
     htmlUrl: html_url,
+    state: draft ? State.draft : state,
     requestedReviewers: requested_reviewers.map(({ login }) => login),
     requestedTeams: requested_teams.map(({ slug }) => slug),
     repository: {
@@ -53,7 +54,6 @@ const PullRequestSchema = ReceivedSchema.transform(
       name: head.repo.name,
     },
     myReview: ReviewState.pending,
-    state: draft ? State.draft : state,
   })
 );
 
