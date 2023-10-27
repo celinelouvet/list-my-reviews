@@ -1,6 +1,7 @@
 import { ReviewState, type PullRequest } from "../schemas";
 
 export const RENOVATE = "renovate[bot]";
+export const SHINY_BATCH = "shiny-batch-changes[bot]";
 
 type Entry = [string, PullRequest[]];
 
@@ -22,7 +23,7 @@ const sortByRepositoryName = (groupeds: Entry[]): Entry[] => {
 export const withOrWithoutRenovatePullRequest = (
   user: string,
   withRenovate: boolean
-): boolean => withRenovate || user !== RENOVATE;
+): boolean => withRenovate || (user !== RENOVATE && user !== SHINY_BATCH);
 
 export const withOrWithoutApprovedPullRequest = (
   myReview: ReviewState,

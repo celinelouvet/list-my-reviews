@@ -1,6 +1,7 @@
 import { ReviewState } from "../schemas";
 import {
   RENOVATE,
+  SHINY_BATCH,
   withOrWithoutApprovedPullRequest,
   withOrWithoutRenovatePullRequest,
 } from "./organizeReviews";
@@ -15,8 +16,10 @@ describe("withOrWithoutRenovatePullRequest", () => {
   const tests: TestType[] = [
     { user: "whatever", withRenovate: true, expectedResult: true },
     { user: RENOVATE, withRenovate: true, expectedResult: true },
+    { user: SHINY_BATCH, withRenovate: true, expectedResult: true },
     { user: "whatever", withRenovate: false, expectedResult: true },
     { user: RENOVATE, withRenovate: false, expectedResult: false },
+    { user: SHINY_BATCH, withRenovate: false, expectedResult: false },
   ];
 
   it.each(tests)(
