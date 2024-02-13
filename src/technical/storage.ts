@@ -2,7 +2,7 @@ import { defaultSettings, parseSettings, type Settings } from "../schemas";
 
 const KEY = "settings";
 
-export const getSettings = () => {
+export const getSettings = (): Settings => {
   try {
     const settings = localStorage.getItem(KEY);
     if (settings === null) {

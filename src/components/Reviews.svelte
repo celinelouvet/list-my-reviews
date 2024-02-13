@@ -1,50 +1,41 @@
 <script lang="ts">
   import { Container, Loader, Title } from "@svelteuidev/core";
-  import { listMyReviews, organizeReviews } from "../business";
-  import type { PullRequest, Repository, Settings } from "../schemas";
+
+  import { organizeReviews } from "../business";
+  import type { PullRequest, Settings } from "../schemas";
   import RepositoryReviews from "./RepositoryReviews.svelte";
 
+  export let title: string;
   let loading = true;
-  let openedPullRequests: PullRequest[] = [];
   let pullRequestsToReview: [string, PullRequest[]][] = [];
-  let title = "Pull requests to review";
 
-  const load = async (
+  export const load = async (
     settings: Settings,
-    repositories: Repository[],
-    allOpenedPullRequests: PullRequest[]
+    pullRequests: PullRequest[]
   ) => {
-    const { username, team, token, withRenovate, withApprovedPullRequests } =
-      settings;
+    console.log("Reviews container", {
+      settings,
+      pullRequests: pullRequests.length,
+    });
+    const { withRenovate, withApprovedPullRequests } = settings;
 
     loading = true;
-
-    openedPullRequests = await listMyReviews(
-      allOpenedPullRequests,
-      { username, team },
-      { token, repositories }
-    );
     pullRequestsToReview = organizeReviews(
-      openedPullRequests,
+      pullRequests,
       withRenovate,
       withApprovedPullRequests
     );
 
-    title = `Pull requests to review (${openedPullRequests.length})`;
     loading = false;
-  };
-
-  export const container = {
-    load,
   };
 </script>
 
 <Container>
-  <div class="section-title">
-    <Title order={2}>{title}</Title>
-  </div>
-
   {#if loading}
+    <div class="section-title">
+      <Title order={2}>{title}</Title>
+    </div>
+
     <Container
       override={{
         height: "40vh",
@@ -56,6 +47,9 @@
       <Loader variant="bars" />
     </Container>
   {:else}
+    <div class="section-title">
+      <Title order={2}>{title} ({pullRequestsToReview.length})</Title>
+    </div>
     {#each pullRequestsToReview as [repository, pullRequests]}
       <RepositoryReviews {repository} {pullRequests} />
     {/each}

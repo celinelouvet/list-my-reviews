@@ -1,37 +1,20 @@
 <script lang="ts">
   import { Container, Loader, Title } from "@svelteuidev/core";
-  import { listMyPullRequests, organizeReviews } from "../business";
-  import type { PullRequest, Repository, Settings } from "../schemas";
+  import { organizeReviews } from "../business";
+  import type { PullRequest } from "../schemas";
   import RepositoryMyPullRequests from "./RepositoryMyPullRequests.svelte";
 
   $: loading = true;
 
-  let myPullRequests: PullRequest[] = [];
   let pullRequestsToReview: [string, PullRequest[]][] = [];
   let title = "My opened pull requests";
 
-  const load = async (
-    settings: Settings,
-    repositories: Repository[],
-    allOpenedPullRequests: PullRequest[]
-  ) => {
-    const { username, team, token } = settings;
-
+  export const load = async (myPullRequests: PullRequest[]) => {
     loading = true;
-
-    myPullRequests = await listMyPullRequests(
-      allOpenedPullRequests,
-      { username, team },
-      { token, repositories }
-    );
     pullRequestsToReview = organizeReviews(myPullRequests, true, true);
 
     title = `My opened pull requests (${myPullRequests.length})`;
     loading = false;
-  };
-
-  export const container = {
-    load,
   };
 </script>
 
@@ -52,8 +35,8 @@
       <Loader variant="bars" />
     </Container>
   {:else}
-    {#each myPullRequests as pullRequest}
-      <RepositoryMyPullRequests {pullRequest} />
+    {#each pullRequestsToReview as [repository, pullRequests]}
+      <RepositoryMyPullRequests {repository} {pullRequests} />
     {/each}
   {/if}
 </Container>

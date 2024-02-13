@@ -1,7 +1,8 @@
 export {
   type CurrentUser,
   listAllOpenedPullRequests,
-  listMyReviews,
+  listOtherReviews,
+  listMyAssignedReviews,
 } from "./listMyReviews";
 
 export { listMyPullRequests } from "./listMyPullRequests";

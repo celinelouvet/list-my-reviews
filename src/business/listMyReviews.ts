@@ -29,51 +29,22 @@ const mineOrMyTeams = (
   return { mine: requestedReviews, others: nonRequestedReviews };
 };
 
+const isForMe = (
+  { user, requestedReviewers, requestedTeams }: PullRequest,
+  { username }: CurrentUser
+) => user !== username && requestedReviewers.includes(username);
+
+const isMyTeam = (
+  { user, requestedTeams }: PullRequest,
+  { username, team }: CurrentUser
+) => user !== username && requestedTeams.includes(team);
+
 const isForMeOrMyTeam = (
   { user, requestedReviewers, requestedTeams }: PullRequest,
   { username, team }: CurrentUser
 ) =>
   user !== username &&
   (requestedReviewers.includes(username) || requestedTeams.includes(team));
-
-const reverseReviews = (reviews: Review[]): Review[] => {
-  const reversed: Review[] = [];
-
-  while (reviews.length) {
-    const review = reviews.pop();
-    if (review) {
-      reversed.push();
-    }
-  }
-  return reversed;
-};
-
-const fetchReviewsAlreadyDone = async (
-  allPullRequests: PullRequest[],
-  { username }: CurrentUser,
-  token: string
-): Promise<PullRequest[]> => {
-  const allReviews = await Promise.all(
-    allPullRequests.map((pullRequest) =>
-      fetchAllReviews({ token, pullRequest })
-    )
-  );
-
-  const requestedReviews: PullRequest[] = [];
-
-  for (const [index, pullRequest] of allPullRequests.entries()) {
-    const reviews = allReviews[index];
-    const myReview = reverseReviews(reviews).find(
-      ({ login }) => login === username
-    );
-
-    if (myReview) {
-      requestedReviews.push({ ...pullRequest, myReview: myReview.state });
-    }
-  }
-
-  return requestedReviews;
-};
 
 export const listAllOpenedPullRequests = async ({
   token,
@@ -87,34 +58,39 @@ export const listAllOpenedPullRequests = async ({
   return pullRequestsByRepository.flat();
 };
 
-export const listMyReviews = async (
+export const listMyAssignedReviews = async (
   allPullRequests: PullRequest[],
-  currentUser: CurrentUser,
-  { token }: Options
-): Promise<PullRequest[]> => {
+  currentUser: CurrentUser
+) => {
+  const notCreatedByMePullRequests = allPullRequests.filter(
+    ({ user }) => user !== currentUser.username
+  );
+  const requestedReviews = notCreatedByMePullRequests.filter((pullRequests) =>
+    isForMe(pullRequests, currentUser)
+  );
+
+  console.log(
+    `Found ${requestedReviews.length} / ${notCreatedByMePullRequests.length} pull requests assigned to me`
+  );
+
+  return requestedReviews;
+};
+
+export const listOtherReviews = async (
+  allPullRequests: PullRequest[],
+  currentUser: CurrentUser
+) => {
   const notCreatedByMePullRequests = allPullRequests.filter(
     ({ user }) => user !== currentUser.username
   );
 
-  const { mine: requestedReviews, others: othersPullRequests } = mineOrMyTeams(
-    notCreatedByMePullRequests,
-    currentUser
+  const otherPullRequests = notCreatedByMePullRequests.filter((pullRequest) =>
+    isMyTeam(pullRequest, currentUser)
   );
-
-  const pullRequestsAlreadyReviewed = await fetchReviewsAlreadyDone(
-    othersPullRequests,
-    currentUser,
-    token
-  );
-
-  const pullRequestsToReview = [
-    ...requestedReviews,
-    ...pullRequestsAlreadyReviewed,
-  ];
 
   console.log(
-    `Found ${pullRequestsToReview.length} / ${notCreatedByMePullRequests.length} pull requests for me`
+    `Found ${otherPullRequests.length} / ${notCreatedByMePullRequests.length} pull requests for my team`
   );
 
-  return pullRequestsToReview;
+  return otherPullRequests;
 };

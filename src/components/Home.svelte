@@ -7,7 +7,7 @@
   import HeaderContent from "./Header.svelte";
   import SettingsContent from "./Settings.svelte";
 
-  let contentContainer;
+  let contentContainer: Content;
 
   let opened = false;
 
@@ -48,7 +48,7 @@
   </Header>
 
   <slot>
-    <Content bind:container={contentContainer} />
+    <Content bind:this={contentContainer} />
   </slot>
 </AppShell>
 <Modal {opened} on:close={closeSettings} title="Settings">

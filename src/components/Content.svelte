@@ -1,12 +1,18 @@
 <script lang="ts">
   import { Badge, Container, Grid, Space, Text } from "@svelteuidev/core";
 
-  import { listAllOpenedPullRequests, listMyPullRequests } from "../business";
+  import {
+    listAllOpenedPullRequests,
+    listMyAssignedReviews,
+    listMyPullRequests,
+    listOtherReviews,
+  } from "../business";
   import type { PullRequest, Repository, Settings } from "../schemas";
   import { fetchAllRepositories } from "../technical";
   import MyPullRequestsContainer from "./MyPullRequests.svelte";
   import ReviewsContainer from "./Reviews.svelte";
 
+  let settings: Settings;
   let organization: string;
   let team: string;
   let username: string;
@@ -15,13 +21,17 @@
   let withApprovedPullRequests: boolean;
   let withRenovate: boolean;
 
-  let reviewsContainer;
-  let myPullRequestsContainer;
+  let myPullRequestsContainer: MyPullRequestsContainer;
+  let myReviewsContainer: ReviewsContainer;
+  let otherReviewsContainer: ReviewsContainer;
 
   let repositories: Repository[] = [];
   let myPullRequests: PullRequest[] = [];
+  let myReviews: PullRequest[] = [];
+  let otherReviews: PullRequest[] = [];
 
-  const refresh = async (settings: Settings) => {
+  export const refresh = async (newSettings: Settings) => {
+    settings = newSettings;
     organization = settings.organization;
     team = settings.team;
     username = settings.username;
@@ -44,17 +54,18 @@
       { username, team },
       { token, repositories }
     );
+    myReviews = await listMyAssignedReviews(allOpenedPullRequests, {
+      username,
+      team,
+    });
+    otherReviews = await listOtherReviews(allOpenedPullRequests, {
+      username,
+      team,
+    });
 
-    await reviewsContainer.load(settings, repositories, allOpenedPullRequests);
-    await myPullRequestsContainer.load(
-      settings,
-      repositories,
-      allOpenedPullRequests
-    );
-  };
-
-  export const container = {
-    refresh,
+    await myPullRequestsContainer.load(myPullRequests);
+    await myReviewsContainer.load(settings, myReviews);
+    await otherReviewsContainer.load(settings, otherReviews);
   };
 
   const color = (value: boolean) => (value ? "green" : "blue");
@@ -92,8 +103,17 @@
     </Grid>
   </Container>
 
-  <MyPullRequestsContainer bind:container={myPullRequestsContainer} />
+  <MyPullRequestsContainer bind:this={myPullRequestsContainer} />
   <Space h="xl" />
   <Space h="xl" />
-  <ReviewsContainer bind:container={reviewsContainer} />
+  <ReviewsContainer
+    bind:this={myReviewsContainer}
+    title="Pull requests assigned to me"
+  />
+  <Space h="xl" />
+  <Space h="xl" />
+  <ReviewsContainer
+    bind:this={otherReviewsContainer}
+    title="Pull requests assigned to my team"
+  />
 </main>
